@@ -128,6 +128,12 @@ fun BillForm(modifier: Modifier = Modifier,
     val sliderPositionState = remember {
         mutableStateOf(0f)
     }
+    val splitByState = remember {
+        mutableStateOf(1)
+    }
+    val range = IntRange(start = 1, endInclusive = 100)
+    val tipPercentage = (sliderPositionState.value * 100).toInt()
+
     Column{
 
 
@@ -175,9 +181,11 @@ fun BillForm(modifier: Modifier = Modifier,
                             imageVector = Icons.Default.Remove,
                             onClick = {
                                 Log.d("Icon", "BillForm: Remove")
+                                splitByState.value = if (splitByState.value > 1) splitByState.value - 1
+                                else 1
                             })
                         Text(
-                            text = "2", modifier = Modifier
+                            text = "${splitByState.value}", modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .padding(start = 9.dp, end = 9.dp)
                         )
@@ -185,6 +193,9 @@ fun BillForm(modifier: Modifier = Modifier,
                             imageVector = Icons.Default.Add,
                             onClick = {
                                 Log.d("Icon", "BillForm: Add")
+                                if (splitByState.value < range.last){
+                                    splitByState.value = splitByState.value + 1
+                                }
                             })
                     }
                 }
@@ -208,7 +219,7 @@ fun BillForm(modifier: Modifier = Modifier,
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "33%")
+                    Text(text = "$tipPercentage %")
                     Spacer(modifier = Modifier.height(14.dp))
 
                     //slider
