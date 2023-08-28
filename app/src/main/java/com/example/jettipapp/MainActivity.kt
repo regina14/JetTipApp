@@ -1,9 +1,7 @@
 package com.example.jettipapp
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
-import android.widget.NumberPicker.OnValueChangeListener
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,10 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -165,6 +159,7 @@ fun BillForm(modifier: Modifier = Modifier,
                         RoundIconButton(
                             imageVector = Icons.Default.Remove,
                             onClick = { /*TODO*/ })
+                        Text(text = "2", modifier = Modifier.align(Alignment.CenterVertically).padding(start = 9.dp, end = 9.dp))
                         RoundIconButton(
                             imageVector = Icons.Default.Add,
                             onClick = { /*TODO*/ })
