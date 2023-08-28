@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jettipapp.components.InputField
 import com.example.jettipapp.ui.theme.JetTipAppTheme
+import com.example.jettipapp.util.calculateTotalTip
 import com.example.jettipapp.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
 fun MyApp(content: @Composable () -> Unit) {
     JetTipAppTheme {
         // A surface container using the 'background' color from the theme
-        Surface(color = MaterialTheme.colorScheme.background){
+        Surface(color = MaterialTheme.colorScheme.background) {
             content()
         }
     }
@@ -73,21 +74,27 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TopHeader(totalPerPerson: Double = 0.0){
-    Surface(modifier = Modifier
-        .fillMaxWidth()
-        .padding(15.dp)
-        .height(150.dp)
-        .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp))),
+fun TopHeader(totalPerPerson: Double = 0.0) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp)
+            .height(150.dp)
+            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp))),
         color = Color(0xFFE9D7F7)
     ) {
-        Column(modifier = Modifier.padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             val total = "%.2f".format(totalPerPerson)
-            Text(text = "Total per person",
-                style = MaterialTheme.typography.headlineMedium)
-            Text(text = "$$total",
+            Text(
+                text = "Total per person",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Text(
+                text = "$$total",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.ExtraBold
             )
@@ -98,8 +105,8 @@ fun TopHeader(totalPerPerson: Double = 0.0){
 @ExperimentalComposeUiApi
 @Composable
 @Preview
-fun MainContent(){
-    BillForm(){billAmt ->
+fun MainContent() {
+    BillForm() { billAmt ->
         Log.d("AMT", "MainContent: $billAmt")
     }
 }
@@ -116,8 +123,10 @@ fun GreetingPreview() {
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BillForm(modifier: Modifier = Modifier,
-            onValChange:(String) -> Unit = {}){
+fun BillForm(
+    modifier: Modifier = Modifier,
+    onValChange: (String) -> Unit = {}
+) {
     val totalBillState = remember {
         mutableStateOf("")
     }
@@ -133,8 +142,11 @@ fun BillForm(modifier: Modifier = Modifier,
     }
     val range = IntRange(start = 1, endInclusive = 100)
     val tipPercentage = (sliderPositionState.value * 100).toInt()
+    val tipAmountState = remember {
+        mutableStateOf(0.0)
+    }
 
-    Column{
+    Column {
 
 
         TopHeader()
@@ -181,8 +193,9 @@ fun BillForm(modifier: Modifier = Modifier,
                             imageVector = Icons.Default.Remove,
                             onClick = {
                                 Log.d("Icon", "BillForm: Remove")
-                                splitByState.value = if (splitByState.value > 1) splitByState.value - 1
-                                else 1
+                                splitByState.value =
+                                    if (splitByState.value > 1) splitByState.value - 1
+                                    else 1
                             })
                         Text(
                             text = "${splitByState.value}", modifier = Modifier
@@ -193,7 +206,7 @@ fun BillForm(modifier: Modifier = Modifier,
                             imageVector = Icons.Default.Add,
                             onClick = {
                                 Log.d("Icon", "BillForm: Add")
-                                if (splitByState.value < range.last){
+                                if (splitByState.value < range.last) {
                                     splitByState.value = splitByState.value + 1
                                 }
                             })
@@ -210,7 +223,7 @@ fun BillForm(modifier: Modifier = Modifier,
                     )
                     Spacer(modifier = Modifier.width(200.dp))
                     Text(
-                        text = "$33.00",
+                        text = "$ ${tipAmountState.value}",
                         modifier = Modifier.align(alignment = Alignment.CenterVertically)
                     )
                 }
@@ -229,6 +242,11 @@ fun BillForm(modifier: Modifier = Modifier,
                         onValueChange = { newVal ->
                             sliderPositionState.value = newVal
                             Log.d("Slider", "BillForm: $newVal")
+                            tipAmountState.value =
+                                calculateTotalTip(
+                                    totalBill = totalBillState.value.toDouble(),
+                                    tipPercentage = tipPercentage
+                                )
                         },
                         steps = 5,
                         onValueChangeFinished = {
@@ -244,3 +262,5 @@ fun BillForm(modifier: Modifier = Modifier,
         }
     }
 }
+
+
